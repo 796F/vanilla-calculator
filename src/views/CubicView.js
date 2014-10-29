@@ -31,8 +31,8 @@ function CubicView() {
     this._cubeTranslationState = new Transitionable([0, 0, 0]);
 
     this._rotationModifier = new Modifier({
-        origin :[0.5, 0.5],
         align: [0.5, 0.5],
+        origin: [0.5, 0.5],
         transform: function() {
             var state = this._cubeRotationState.get();
             return Transform.rotate(state[0], state[1], state[2]);
@@ -47,14 +47,13 @@ function CubicView() {
     })
 
     this._rootNode = this.add(this._rotationModifier).add(this._translationModifier);
-    var intervalId = setInterval(function() {
-        var i = Math.round(Math.random() * 5);
-        this.flipTo(i);
-        this.shiftTo(i%2);
-    }.bind(this), 2000 + Math.round(Math.random() * 1000));
+    // var intervalId = setInterval(function() {
+    //     var i = Math.round(Math.random() * 5);
+    //     this.flipTo(i);
+    //     this.shiftTo(i%2);
+    // }.bind(this), 2000 + Math.round(Math.random() * 1000));
     
     _createFaces.call(this);
-
 }
 
 CubicView.prototype = Object.create(View.prototype);
@@ -152,28 +151,27 @@ function _createFaces() {
     var self = this;
     for(var i=0; i<FACE_ROTATIONS.length; i++){
         var face = new Surface({
-          content: 'surf ' + i,
+          // content: 'surf ' + i,
           classes: ['backfaceVisibility'],
           size: [self.options.width, self.options.height],
           properties: {
             color: 'white',
             textAlign: 'center',
             lineHeight: '100px',
-            backgroundColor: 'black'
-            // backgroundColor: 'hsl(' + (i * 360 / 3) + ', 100%, 50%)'
+            // backgroundColor: 'black'
+            backgroundColor: 'hsl(' + (i * 36 / 3) + ', 80%, 30%)'
           }
         });
         var face_loc = FACE_ROTATIONS[i];
         var rMod = new Modifier({
-            origin: [0.5, 0.5],
-            align: [0.5, 0.5],
             transform: Transform.rotate(face_loc[0], face_loc[1], face_loc[2])
         });
         
         var zMod = new Modifier({
+            //TODO HOW TO GET RENDERED WIDTH?
+
             transform: Transform.translate(0, 0, self.options.width/2)
         });
-
         self._faces.push(face);
         self._rootNode.add(rMod).add(zMod).add(face);
     }

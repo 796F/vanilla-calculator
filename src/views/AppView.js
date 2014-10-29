@@ -29,7 +29,7 @@ function AppView() {
     });
 
     
-
+    window.appview = this;
     this._rootNode = this.add(this._sceneModifier)
     
     // var cube = new CubicView({});
@@ -57,20 +57,18 @@ AppView.DEFAULT_OPTIONS = {
 };
 
 function _createLayout() {
-    var views = [];
+    this._cubes = [];
     this._layout = new GridLayout({
         dimensions: this.options.dimensions
     });
-    this._layout.sequenceFrom(views);
+    this._layout.sequenceFrom(this._cubes);
 
     this._rootNode.add(this._layout);
     
     var grids = this.options.dimensions[0] * this.options.dimensions[1];
     
     for(var i = 0; i<grids; i++) {
-        var view = new CubicView({});
-        
-        views.push(view);
+        this._cubes.push(new CubicView({}));
     }
 }
 
