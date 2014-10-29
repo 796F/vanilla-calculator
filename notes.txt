@@ -1,15 +1,16 @@
-basic grid layout, custom vs extend?  surfaces ontop.  resizes to device.  
-
+day 1
+basic grid layout, custom vs extend?  surfaces ontop. 
 rect prism renderable, create a grid of those in place of the surface.
 
-listeneers on each prism, flip and stuff on click.  
+day 2
+flip patterns
+sizing
+listeneers on each prism, 
+flip and stuff on click.  
 
 behind these tiles, are other buttons.  
-
 cubes, with sides.  tilting to different sides shows different buttons.  
-
 pressing buttons depresses it, and its reboundaction causes things to flip.  
-
 
 variable screen size?  maybe i can flip some of the cubes and turn them into part of the screen?  
 monospace font.  
