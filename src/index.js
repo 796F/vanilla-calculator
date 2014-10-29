@@ -5,16 +5,9 @@ require('./styles');
 
 var mainContext = Engine.createContext();
 
-// var app = new CubicGridView({
-//   size : [500, 500]
-// });
-
-var app = new CalculatorView({
-  size : [500, 500]
-});
+var app = new CalculatorView();
 
 mainContext.setPerspective(800);
 mainContext.add(app);
-
 
 window.app = app;

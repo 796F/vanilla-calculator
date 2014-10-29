@@ -99,7 +99,7 @@ CubicView.prototype.popFlipReturn = function popFlipReturn(index, popDirection, 
     var self = this;
 
     if(delay instanceof Function) callback = delay, delay = 0;
-    console.log(delay);
+    
     self.shiftTo(popDirection, delay, function() {
         self.flipTo(index, delay, function() {
             self.shiftTo(0, delay, callback);
@@ -109,33 +109,29 @@ CubicView.prototype.popFlipReturn = function popFlipReturn(index, popDirection, 
 
 CubicView.prototype.shiftTo = function shiftTo(state, delay, callback) {
     if(delay instanceof Function) callback = delay, delay = 0;
-    console.log(delay);
+    
     this._cubeTranslationState.delay(delay);
     this._cubeTranslationState.set([0, 0, state * this.options.edgeLength], CUBE_TRANSITION, callback);
 }
 
 CubicView.prototype.flipTo = function flipTo(index, delay, callback) {
+    var self = this;
     if(delay instanceof Function) callback = delay, delay = 0;
 
-    this._cubeRotationState.delay(delay);
-    this.reverseRotations(function() {
+    self._cubeRotationState.delay(delay);
+    self.reverseRotations(function() {
         //finished reversing the rotations.
-        var currentState = this._flipEndState;
+        var currentState = self._flipEndState;
 
-        this._flipEndState = FACE_ROTATIONS[index].map(function(n) { return -n }); 
-        this._reversalChain.push(FACE_ROTATIONS[index]);
+        self._flipEndState = FACE_ROTATIONS[index].map(function(n) { return -n }); 
+        self._reversalChain.push(FACE_ROTATIONS[index]);
 
-        //generate stateArray from
-        // console.log('generate state Array for flip from', currentState, 'and', this._flipEndState);
-        var states = _createStateArray(currentState, this._flipEndState);
-        
-        _flipChain.call(this, states, callback);
-        // this._cubeRotationState.set(this._flipEndState, CUBE_TRANSITION);
-    }.bind(this));
+        var states = _createStateArray(currentState, self._flipEndState);        
+        _flipChain.call(self, states, callback);
+    });
 }
 
 CubicView.prototype.reverseRotations = function reverseRotations(callback) {
-    // console.log('called reverse, chain has', this._reversalChain.length);
     if(this._reversalChain.length == 0) return callback();
 
     for(var i = 0; i<this._reversalChain.length; i++) {
@@ -143,14 +139,24 @@ CubicView.prototype.reverseRotations = function reverseRotations(callback) {
         var currentState = this._flipEndState;
         this._flipEndState = _vecSum(this._flipEndState, reversal);
 
-        //generate stateArray from 
-        // console.log('generate state Array for Reversal from', currentState, 'and', this._flipEndState);
         var states = _createStateArray(currentState, this._flipEndState);
-        // _flipChain(states, callback).bind(this);
-
         _flipChain.call(this, states, callback);
-        // this._cubeRotationState.set(this._flipEndState, CUBE_TRANSITION, callback);
     }
+}
+
+function _flipChain (stateArray, delay, callback) {
+    if(delay instanceof Function) callback = delay, delay = 0;
+
+    var self = this;
+    if(stateArray.length == 0) {
+        if(callback) callback();
+    }else{
+        var state = stateArray.shift(); 
+        self._cubeRotationState.set(state, CUBE_TRANSITION, function() {
+            _flipChain.call(self, stateArray, callback);
+        });    
+    }
+    
 }
 
 function _vecSum(a, b) {
@@ -175,21 +181,6 @@ function _createStateArray (start, end) {
     return states;
 }
 
-function _flipChain (stateArray, delay, callback) {
-    if(delay instanceof Function) callback = delay, delay = 0;
-
-    var self = this;
-    if(stateArray.length == 0) {
-        if(callback) callback();
-    }else{
-        var state = stateArray.shift(); 
-        self._cubeRotationState.set(state, CUBE_TRANSITION, function() {
-            _flipChain.call(self, stateArray, callback);
-        });    
-    }
-    
-}
-
 function _createCube() {
     var self = this;
     for(var i=0; i<FACE_ROTATIONS.length; i++){
@@ -205,32 +196,6 @@ function _createCube() {
 
         self._faces.push(face);
         self._rootNode.add(rMod).add(zMod).add(face);
-
-        // var face = new Surface({
-        //   // content: ''+i,
-        //   classes: ['backfaceVisibility'],
-        //   size: [this.options.edgeLength, this.options.edgeLength],
-        //   properties: {
-        //     color: 'white',
-        //     textAlign: 'center',
-        //     lineHeight: '100px',
-        //     // border: '1px solid white',
-        //     // backgroundColor: FACE_COLORS[i]
-        //     backgroundColor: 'hsl(' + (i * 36 / 3) + ', 80%, 70%)'
-        //   }
-        // });
-        
-        // var rMod = new Modifier({ 
-        //     transform: Transform.rotate.apply(self, FACE_ROTATIONS[i]) 
-        // });
-
-        // var zMod = new Modifier({
-        //     //TODO HOW TO GET RENDERED WIDTH?
-        //     transform: Transform.translate(0, 0, this.options.edgeLength * 0.5)
-        // });
-        
-        // self._faces.push(face);
-        // self._rootNode.add(rMod).add(zMod).add(face);
     }
 }
 
@@ -251,9 +216,6 @@ function _createFace(index, content) {
     
     face.on('mousedown', function() {
         console.log('mdown on cube', this._index, 'face', index);
-        this.popFlipReturn(5, 1, function(){
-            console.log('done');
-        });
     }.bind(this));
 
     face.on('mouseup', function() {

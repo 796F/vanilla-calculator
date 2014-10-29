@@ -57,7 +57,8 @@ CubicGridView.prototype.randomPopReturnToIndex = function(index) {
         //while there are unflipped cubes
         var randomIndex = Math.round(Math.random() * (this._cubes.length-1));
         if(!flipped[randomIndex]) {
-            this._cubes[randomIndex].popFlipReturn(index, Math.random() > 0.5 ? 1 : -1 , Math.round(Math.random() * 1000));
+            var shiftMagnitude = Math.round(Math.random() * 2);
+            this._cubes[randomIndex].popFlipReturn(index, Math.random() > 0.5 ? shiftMagnitude : -shiftMagnitude , Math.round(Math.random() * 1000));
             flipped[randomIndex] = true;
         }
         setTimeout(10 * randomIndex);
