@@ -7,7 +7,18 @@ var StateModifier  = require('famous/modifiers/StateModifier');
 var Easing         = require('famous/transitions/Easing');
 var EventHandler   = require('famous/core/EventHandler');
 
-var CUBE_TRANSITION = { duration: 700, curve: Easing.inOutElastic };
+var CUBE_TRANSITION = { duration: 500, curve: Easing.inOutElastic };
+var CUBE_TRANSITION = { duration: 500, curve: Easing.inQuad };
+var CUBE_TRANSITION = { duration: 500, curve: Easing.outQuad };
+var CUBE_TRANSITION = { duration: 500, curve: Easing.inOutQuad };
+var CUBE_TRANSITION = { duration: 500, curve: Easing.inCubic };
+var CUBE_TRANSITION = { duration: 500, curve: Easing.outCubic };
+var CUBE_TRANSITION = { duration: 500, curve: Easing.inOutCubic };
+
+// var CUBE_TRANSITION = { duration: 500, curve: Easing.inOutSine };
+// var CUBE_TRANSITION = { duration: 500, curve: Easing.inOutExpo };
+// var CUBE_TRANSITION = { duration: 500, curve: Easing.inOutCirc };
+// var CUBE_TRANSITION = { duration: 500, curve: Easing.inOutBounce };
 
 var NINETY_DEGRESS = Math.PI/2;
 

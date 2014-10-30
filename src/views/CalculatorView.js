@@ -14,7 +14,7 @@ function CalculatorView() {
     View.apply(this, arguments);
     this._buttonCount = 0;
 
-    this._sceneTransitionable = new Transitionable([0, 0, 0]);
+    this._sceneTransitionable = new Transitionable([-Math.PI/6, Math.PI/4, 0]);
     this._sceneModifier = new Modifier({
         align: [0.5, 0.5],
         origin: [0.5, 0.5],
@@ -81,7 +81,7 @@ function _createButtons(content, fnName, argsArray) {
             borderRadius: '10px',
             textAlign: 'center',
             // backgroundColor: 'black',
-            marginTop: this._buttonCount*25 + 'px',
+            marginTop: this._buttonCount * 25 + 'px',
         },
     })
 
