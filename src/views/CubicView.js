@@ -68,7 +68,6 @@ function CubicView() {
     this._rootNode = this.add(this._translationModifier).add(this._rotationModifier);
     
     _createCube.call(this);
-    // this.toggleJiggle();
 }
 
 CubicView.prototype = Object.create(View.prototype);
@@ -91,7 +90,7 @@ CubicView.prototype.toggleJiggle = function() {
         this.jiggling = setInterval(function() {
             var i = Math.round(Math.random() * 5);
             this.flipTo(i);
-            this.shiftTo(i%3 - 1);
+            this.shiftTo(i%4 - 1);
         }.bind(this), 2000 + Math.round(Math.random() * 1000));
     }
 }

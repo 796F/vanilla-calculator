@@ -1,8 +1,10 @@
 var View = require('famous/core/View');
 var Surface = require('famous/core/Surface');
 var Transform = require('famous/core/Transform');
+var Transitionable = require('famous/transitions/Transitionable');
 var StateModifier = require('famous/modifiers/StateModifier');
 var CubicGridView = require('./CubicGridView');
+var Modifier   = require('famous/core/Modifier');
 
 var KEYS = [
     
@@ -12,6 +14,17 @@ function CalculatorView() {
     View.apply(this, arguments);
     this._buttonCount = 0;
 
+    this._sceneTransitionable = new Transitionable([0, 0, 0]);
+    this._sceneModifier = new Modifier({
+        align: [0.5, 0.5],
+        origin: [0.5, 0.5],
+        transform: function() {
+            return Transform.rotate.apply(this, this._sceneTransitionable.get())  ;
+        }.bind(this)
+    });
+    
+    this._rootNode = this.add(this._sceneModifier);
+
     _createKeyboard.call(this);
     _createButtons.call(this, 'flatten', 'flatten');
     _createButtons.call(this, 'toggle', 'toggleJiggle');
@@ -20,6 +33,21 @@ function CalculatorView() {
     _createButtons.call(this, 'randomFlipToIndex', 'randomFlipToIndex');
     _createButtons.call(this, 'randomPopReturnToIndex', 'randomPopReturnToIndex');
     _createButtons.call(this, 'orderlyFlipToIndex', 'orderlyFlipToIndex');
+
+    var test = new Surface({
+        content: 'hello',
+        size: [50, 50], 
+        properties : {
+            backgroundColor: 'black'
+        }
+    });
+    test.on('click', function() {
+        var old_rotation = Object.create(this._sceneTransitionable.get());
+        old_rotation[0] += 0.2;
+        old_rotation[1] += 0.1;
+        this._sceneTransitionable.set(old_rotation);
+    }.bind(this))
+    this.add(test);
 }
 
 CalculatorView.prototype = Object.create(View.prototype);
@@ -36,7 +64,7 @@ function _createKeyboard() {
 
     window.grid = this._keybaord;
 
-   this.add(this._keybaord);
+   this._rootNode.add(this._keybaord);
 }
 
 function _createButtons(content, fnName, argsArray) {
