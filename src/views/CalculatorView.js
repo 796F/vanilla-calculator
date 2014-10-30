@@ -4,6 +4,10 @@ var Transform = require('famous/core/Transform');
 var StateModifier = require('famous/modifiers/StateModifier');
 var CubicGridView = require('./CubicGridView');
 
+var KEYS = [
+    
+]
+
 function CalculatorView() {
     View.apply(this, arguments);
 

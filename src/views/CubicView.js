@@ -205,8 +205,8 @@ function _createStateArray (start, end) {
 function _createCube() {
     var self = this;
     for(var i=0; i<FACE_ROTATIONS.length; i++){
-        var face = _createFace.call(this, i, '' + i);
-        // var face = _createFace.call(this, i);
+        // var face = _createFace.call(this, i, '' + i);
+        var face = _createFace.call(this, i);
         // var rMod = new Modifier({
         //     opacity : 0.9,
         //     transform: Transform.rotate.apply(self, FACE_ROTATIONS[i]) 

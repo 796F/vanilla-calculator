@@ -6,10 +6,6 @@ var GridLayout = require('famous/views/GridLayout');
 var CubicView  = require('./CubicView');
 var GridAnimations = require('./GridAnimations');
 
-var KEYS = [
-    
-]
-
 function CubicGridView() {
     View.apply(this, arguments);
 

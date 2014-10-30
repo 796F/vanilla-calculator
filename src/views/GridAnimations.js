@@ -80,7 +80,6 @@ Animations.orderlyFlipToIndex = function orderlyFlipToIndex(index) {
     }
 }
 
-
 var FIGURES = {
   CLEAR : [
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
