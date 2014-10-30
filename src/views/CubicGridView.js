@@ -11,19 +11,26 @@ function CubicGridView() {
 
     this._cubes = [];
     this._gridLayout;
+    this.numberOfCubes = this.options.dimensions[0] * this.options.dimensions[1];
+    this._cubeStyleMap = {};
+
+    //force to square with the X dimension, ignore height.  
+    this._gridWidthPixel = this.options.size[0];
+    this._gridHeightPixel = this._gridWidthPixel;
+
+    this._gridWidth = this.options.dimensions[0];
+    this._gridHeight = this._gridWidth;
 
     this._rootModifier = new Modifier({
-        align: [0.5, 0.5],
-        origin: [0.5, 0.5],
-        size: this.options.size
+        size: [this._gridWidthPixel, this._gridHeightPixel]
     });
 
     this._rootNode = this.add(this._rootModifier);
     
     //create cube layout
+    _formatCubeStyles.call(this);
     _createCubicLayout.call(this);
     _loadAnimations.call(this);
-    // _createTestCube.call(this);
 }
 
 CubicGridView.prototype = Object.create(View.prototype);
@@ -41,17 +48,17 @@ function _loadAnimations () {
     }
 }
 
-function _createTestCube() {
-    var cube = new CubicView({});
-    this._cubes.push(cube);
-    this._rootNode.add(cube);
-}
-
 function _createCubicLayout() {
-    for(var i = 0; i<this.options.dimensions[0] * this.options.dimensions[1]; i++) {
-        this._cubes.push(new CubicView({
-            index : i
-        }));
+    var cubeSize = this.options.size[0]/this.options.dimensions[0];
+
+    for(var i = 0; i<this.numberOfCubes; i++) {
+        var cubeOpts = {
+            index : i,
+            edgeLength : cubeSize,
+        }
+        if(this._cubeStyleMap[i]) cubeOpts.cubeStyle = this._cubeStyleMap[i];
+        
+        this._cubes.push(new CubicView(cubeOpts));
     }
 
     this._gridLayout = new GridLayout({
@@ -62,4 +69,24 @@ function _createCubicLayout() {
     this._rootNode.add(this._gridLayout);
 }
 
+function _formatCubeStyles() {
+    for(var i=0; i<this.options.cubeStyleMap.length; i++) {
+        var cubeStyle = this.options.cubeStyleMap[i];
+        var cubeIndex = cubeStyle.coordinate[0] * this._gridWidth + cubeStyle.coordinate[1];
+        this._cubeStyleMap[cubeIndex] = cubeStyle.style;
+    }
+}
+
+//debug 
+
+function _createTestCube() {
+    var cubeSize = (this.options.size[0] * this.options.size[1]) / this.numberOfCubes
+    var cube = new CubicView({
+        edgeLength : cubeSize
+    });
+    this._cubes.push(cube);
+    this._rootNode.add(cube);
+}
+
 module.exports = CubicGridView;
+

@@ -2,6 +2,7 @@ var View           = require('famous/core/View');
 var Surface        = require('famous/core/Surface');
 var Transform      = require('famous/core/Transform');
 var Modifier       = require('famous/core/Modifier');
+var OptionsManager = require('famous/core/OptionsManager');
 var Transitionable = require('famous/transitions/Transitionable');
 var StateModifier  = require('famous/modifiers/StateModifier');
 var Easing         = require('famous/transitions/Easing');
@@ -18,15 +19,6 @@ var FACE_ROTATIONS = [
     [0, -NINETY_DEGRESS, 0],      //BOTTOM
     [0, NINETY_DEGRESS, 0],       //TOP 
     [2 * NINETY_DEGRESS, 0, 0],   //BACK  
-]
-
-var FACE_COLORS = [
-    'black',    //off mode == 0
-    'white',    //on mode  == 1
-    'black',    //custom button 1
-    'black',    //custom button 2
-    'black',    //custom button 3
-    'black',    //custom button 4
 ]
 
 var SYMBOL_FACE_MAP = {
@@ -74,10 +66,16 @@ CubicView.prototype = Object.create(View.prototype);
 CubicView.prototype.constructor = CubicView;
 
 CubicView.DEFAULT_OPTIONS = {
-    width : 50,
-    height : 50,
     edgeLength : 50,
-    translation : 25
+    translation : 25,
+    cubeStyle : [
+        { color: 'black', content: '0' , backgroundColor: 'white' },    //off mode == 0
+        { color: 'black', content: '0' , backgroundColor: 'white' },    //on mode  == 1
+        { color: 'black', content: '0' , backgroundColor: 'white' },    
+        { color: 'black', content: '0' , backgroundColor: 'white' },    
+        { color: 'black', content: '0' , backgroundColor: 'white' },    
+        { color: 'black', content: '0' , backgroundColor: 'white' },
+    ]
 };
 
 CubicView.prototype.toggleJiggle = function() {
@@ -228,28 +226,35 @@ function _createCube() {
 }
 
 function _createFace(index, content) {
+
+    var face_style = this.options.cubeStyle[index] || CubicView.DEFAULT_OPTIONS.cubeStyle[index];
+
+    var surfaceProps = {
+        textAlign: 'center',
+        lineHeight: '70px',
+        fontSize: '35px',
+        // border: '1px solid grey',
+        // backgroundColor: FACE_COLORS[i]
+    }
+
+    if(face_style.backgroundColor) surfaceProps.backgroundColor = face_style.backgroundColor;
+    if(face_style.color) surfaceProps.color = face_style.color;
+
     var face = new Surface({
-      content: content,
+      content: face_style.content,
       classes: ['backfaceVisibility'],
       size: [this.options.edgeLength, this.options.edgeLength],
-      properties: {
-        color: 'white',
-        textAlign: 'center',
-        lineHeight: '50px',
-        fontSize: '35px',
-        // border: '1px solid white',
-        // backgroundColor: FACE_COLORS[i]
-        backgroundColor: 'hsl(' + (index * 36 / 3) + ', 80%, 40%)'
-      }
+      properties: surfaceProps
     });
     
-    face.on('mousedown', function() {
-        console.log('mdown on cube', this._index, 'face', index);
-    }.bind(this));
+    // face.on('mousedown', function() {
+    //     console.log('mdown on cube', this._index, 'face', index);
+    //     this.flipTo(Math.round(Math.random() * 5));
+    // }.bind(this));
 
-    face.on('mouseup', function() {
-        console.log('mouseup on cube', this._index, 'face', index);
-    }.bind(this));
+    // face.on('mouseup', function() {
+    //     console.log('mouseup on cube', this._index, 'face', index);
+    // }.bind(this));
 
     return face;
 }
