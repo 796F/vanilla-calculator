@@ -39,6 +39,8 @@ function CubicView() {
     View.apply(this, arguments);
 
     this._flipEndState = [0, 0, 0];
+    this._currentFaceIndex = 0;
+    this._currentShiftState = 0;
     this._cubeRotationState = new Transitionable([0, 0, 0]);
     this._cubeTranslationState = new Transitionable([0, 0, 0]);
 
@@ -82,8 +84,7 @@ CubicView.DEFAULT_OPTIONS = {
 CubicView.prototype.toggleJiggle = function() {
     if(this.jiggling) {
         clearInterval(this.jiggling);
-        this.shiftTo(0, 100);
-        this.flipTo(0, 100);
+        this.halt();
         this.jiggling = undefined;
     }else{
         // make jiggle
@@ -93,6 +94,22 @@ CubicView.prototype.toggleJiggle = function() {
             this.shiftTo(i%3 - 1);
         }.bind(this), 2000 + Math.round(Math.random() * 1000));
     }
+}
+
+CubicView.prototype.returnToStart = function(delay, callback) {
+    var self = this;
+    if(delay instanceof Function) callback = delay, delay = 0;
+
+    self.flipTo(0, delay, function() {
+        self.shiftTo(0, delay, function() {
+            if(callback) return callback();
+        });
+    });
+}
+
+CubicView.prototype.halt = function() {
+    this.shiftTo(this._currentShiftState);
+    this.flipTo(this._currentFaceIndex);
 }
 
 CubicView.prototype.popFlipReturn = function popFlipReturn(index, popDirection, delay, callback) {
@@ -110,6 +127,7 @@ CubicView.prototype.popFlipReturn = function popFlipReturn(index, popDirection, 
 CubicView.prototype.shiftTo = function shiftTo(state, delay, callback) {
     if(delay instanceof Function) callback = delay, delay = 0;
     
+    this._currentShiftState = state;
     this._cubeTranslationState.delay(delay);
     this._cubeTranslationState.set([0, 0, state * this.options.edgeLength], CUBE_TRANSITION, callback);
 }
@@ -118,13 +136,15 @@ CubicView.prototype.flipTo = function flipTo(index, delay, callback) {
     var self = this;
     if(delay instanceof Function) callback = delay, delay = 0;
 
+    self._currentFaceIndex = index;
+    
     self._cubeRotationState.delay(delay);
     self.reverseRotations(function() {
         //finished reversing the rotations.
         var currentState = self._flipEndState;
 
-        self._flipEndState = FACE_ROTATIONS[index].map(function(n) { return -n }); 
-        self._reversalChain.push(FACE_ROTATIONS[index]);
+        self._flipEndState = FACE_ROTATIONS[self._currentFaceIndex].map(function(n) { return -n }); 
+        self._reversalChain.push(FACE_ROTATIONS[self._currentFaceIndex]);
 
         var states = _createStateArray(currentState, self._flipEndState);        
         _flipChain.call(self, states, callback);
@@ -178,24 +198,33 @@ function _createStateArray (start, end) {
             states.push(tmp);
         }
     }
+    if(states.length == 0) states.push(end);
     return states;
 }
 
 function _createCube() {
     var self = this;
     for(var i=0; i<FACE_ROTATIONS.length; i++){
-        var face = _createFace.call(this, i);
-        var rMod = new Modifier({ 
-            transform: Transform.rotate.apply(self, FACE_ROTATIONS[i]) 
-        });
-
+        var face = _createFace.call(this, i, '' + i);
+        // var face = _createFace.call(this, i);
+        // var rMod = new Modifier({
+        //     opacity : 0.9,
+        //     transform: Transform.rotate.apply(self, FACE_ROTATIONS[i]) 
+        // });
         var zMod = new Modifier({
             //TODO HOW TO GET RENDERED WIDTH?
-            transform: Transform.translate(0, 0, this.options.edgeLength * 0.5)
+            // transform: Transform.translate(0, 0, this.options.edgeLength * 0.5)
+            transform: Transform.multiply(
+                Transform.rotate.apply(self, FACE_ROTATIONS[i]),
+                Transform.translate(0, 0, this.options.edgeLength * 0.5)
+            )
         });
 
+
+
         self._faces.push(face);
-        self._rootNode.add(rMod).add(zMod).add(face);
+        // self._rootNode.add(rMod).add(zMod).add(face);
+        self._rootNode.add(zMod).add(face);
     }
 }
 
@@ -207,10 +236,11 @@ function _createFace(index, content) {
       properties: {
         color: 'white',
         textAlign: 'center',
-        lineHeight: '100px',
+        lineHeight: '50px',
+        fontSize: '35px',
         // border: '1px solid white',
         // backgroundColor: FACE_COLORS[i]
-        backgroundColor: 'hsl(' + (index * 36 / 3) + ', 80%, 70%)'
+        backgroundColor: 'hsl(' + (index * 36 / 3) + ', 80%, 40%)'
       }
     });
     

@@ -4,6 +4,7 @@ var Modifier   = require('famous/core/Modifier');
 var Transform  = require('famous/core/Transform');
 var GridLayout = require('famous/views/GridLayout');
 var CubicView  = require('./CubicView');
+var GridAnimations = require('./GridAnimations');
 
 var KEYS = [
     
@@ -26,6 +27,7 @@ function CubicGridView() {
     
     //create cube layout
     _createCubicLayout.call(this);
+    _loadAnimations.call(this);
     // _createTestCube.call(this);
 }
 
@@ -37,44 +39,10 @@ CubicGridView.DEFAULT_OPTIONS = {
     size : [500, 500],
 };
 
-CubicGridView.prototype.randomFlipToIndex = function randomFlipToIndex(index) {
-    //randomly go through all the cubes, and flip them to a certain side.
-    var flipped = Array.apply(null, new Array(this._cubes.length)).map(Number.prototype.valueOf,0);
-    while(flipped.indexOf(0) >= 0) {
-        //while there are unflipped cubes
-        var randomIndex = Math.round(Math.random() * (this._cubes.length-1));
-        if(!flipped[randomIndex]) {
-            this._cubes[randomIndex].flipTo(index, Math.round(Math.random() * 1000));
-            flipped[randomIndex] = true;
-        }
-        setTimeout(10 * randomIndex);
-    }
-}
-
-CubicGridView.prototype.randomPopReturnToIndex = function(index) {
-    var flipped = Array.apply(null, new Array(this._cubes.length)).map(Number.prototype.valueOf,0);
-    while(flipped.indexOf(0) >= 0) {
-        //while there are unflipped cubes
-        var randomIndex = Math.round(Math.random() * (this._cubes.length-1));
-        if(!flipped[randomIndex]) {
-            var shiftMagnitude = Math.round(Math.random() * 2);
-            this._cubes[randomIndex].popFlipReturn(index, Math.random() > 0.5 ? shiftMagnitude : -shiftMagnitude , Math.round(Math.random() * 1000));
-            flipped[randomIndex] = true;
-        }
-        setTimeout(10 * randomIndex);
-    }
-}
-
-CubicGridView.prototype.orderlyFlipToIndex = function orderlyFlipToIndex(index) {
-    for(var i=0; i<this._cubes.length; i++) {
-        this._cubes[i].flipTo(index, 30 * i);
-    }
-}
-
-CubicGridView.prototype.clean = function clean() {
-    for(var i=0; i<this._cubes.length; i++) { 
-        this._cubes[i].shiftTo(0); 
-        this._cubes[i].flipTo(0); 
+function _loadAnimations () {
+    //load all the animations into prototype
+    for(var animationName in GridAnimations) {
+        CubicGridView.prototype[animationName] = GridAnimations[animationName].bind(this);
     }
 }
 

@@ -8,6 +8,16 @@ sizing
 listeneers on each prism, 
 flip and stuff on click.  
 
+day 3
+get better computer
+start demo on it, add more surfaces.  
+start off a mess, onstant moving.  
+tell them to stop all of a sudden.  
+tell them to get in line
+tell them to animate 1
+             animate 2
+tell them to make famous logo
+
 behind these tiles, are other buttons.  
 cubes, with sides.  tilting to different sides shows different buttons.  
 pressing buttons depresses it, and its reboundaction causes things to flip.  
