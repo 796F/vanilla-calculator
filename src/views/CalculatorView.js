@@ -10,10 +10,16 @@ var KEYS = [
 
 function CalculatorView() {
     View.apply(this, arguments);
-
+    this._buttonCount = 0;
 
     _createKeyboard.call(this);
-
+    _createButtons.call(this, 'flatten', 'flatten');
+    _createButtons.call(this, 'toggle', 'toggleJiggle');
+    _createButtons.call(this, 'famousPop', 'popFigure', ['FAMOUS', 1]);
+    _createButtons.call(this, 'famousFlip', 'flipFigure', ['FAMOUS', 5]);
+    _createButtons.call(this, 'randomFlipToIndex', 'randomFlipToIndex');
+    _createButtons.call(this, 'randomPopReturnToIndex', 'randomPopReturnToIndex');
+    _createButtons.call(this, 'orderlyFlipToIndex', 'orderlyFlipToIndex');
 }
 
 CalculatorView.prototype = Object.create(View.prototype);
@@ -31,6 +37,33 @@ function _createKeyboard() {
     window.grid = this._keybaord;
 
    this.add(this._keybaord);
+}
+
+function _createButtons(content, fnName, argsArray) {
+    
+    var mod = new StateModifier({
+        origin : [1, 1],
+        align: [0.8, 0.5]
+    });
+
+    var surf = new Surface({
+        content: '<button>' + content + '</button>',
+        size: [0, 0],
+        properties: {
+            borderRadius: '10px',
+            textAlign: 'center',
+            // backgroundColor: 'black',
+            marginTop: this._buttonCount*25 + 'px',
+        },
+    })
+
+    surf.on('click', function() {
+        console.log(fnName);
+        this._keybaord[fnName].apply(this, argsArray);
+    }.bind(this));
+
+    this.add(mod).add(surf);
+    this._buttonCount++;
 }
 
 module.exports = CalculatorView;

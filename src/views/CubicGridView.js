@@ -16,7 +16,7 @@ function CubicGridView() {
         align: [0.5, 0.5],
         origin: [0.5, 0.5],
         size: this.options.size,
-        transform: Transform.rotate(-Math.PI/4, Math.PI/4, 0)
+        transform: Transform.rotate(-Math.PI/6, Math.PI/4, 0)
     });
 
     this._rootNode = this.add(this._rootModifier);

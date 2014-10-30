@@ -48,6 +48,7 @@ Animations.toggleJiggle = function toggleJiggle() {
 Animations.diagonalFlipToIndex = function diagonalFlipToIndex(index) {}
 
 Animations.randomFlipToIndex = function randomFlipToIndex(index) {
+  if(index == undefined) index = Math.round(Math.random() * 5);
     //randomly go through all the cubes, and flip them to a certain side.
     var flipped = Array.apply(null, new Array(this._cubes.length)).map(Number.prototype.valueOf,0);
     while(flipped.indexOf(0) >= 0) {
@@ -61,6 +62,7 @@ Animations.randomFlipToIndex = function randomFlipToIndex(index) {
 }
 
 Animations.randomPopReturnToIndex = function randomPopReturnToIndex(index) {
+    if(index == undefined) index = Math.round(Math.random() * 5);
     var flipped = Array.apply(null, new Array(this._cubes.length)).map(Number.prototype.valueOf,0);
     while(flipped.indexOf(0) >= 0) {
         //while there are unflipped cubes
@@ -75,6 +77,7 @@ Animations.randomPopReturnToIndex = function randomPopReturnToIndex(index) {
 }
 
 Animations.orderlyFlipToIndex = function orderlyFlipToIndex(index) {
+    if(index == undefined) index = Math.round(Math.random() * 5);
     for(var i=0; i<this._cubes.length; i++) {
         this._cubes[i].flipTo(index, 30 * i);
     }
